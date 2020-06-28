@@ -183,8 +183,10 @@ elif host_machine.system() == 'windows'
   cdata.set('SDL_VIDEO_DRIVER_WINDOWS', 1)
   cdata.set('SDL_VIDEO_RENDER_D3D', 1)
   cdata.set('SDL_AUDIO_DRIVER_WINMM', 1)
+  cdata.set('SDL_VIDEO_OPENGL', 1)
+  cdata.set('SDL_VIDEO_OPENGL_WGL', 1)
 #  core_args += '
-  core_ldflags += ['winmm.lib', 'version.lib', 'imm32.lib']
+  core_ldflags += ['winmm.lib', 'version.lib', 'imm32.lib', 'opengl32.lib']
 elif host_machine.system() == 'darwin'
   cdata.set('HAVE_GCC_ATOMICS', 1)
   cdata.set('HAVE_GCC_SYNC_LOCK_TEST_AND_SET', 1)
