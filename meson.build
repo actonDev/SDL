@@ -186,7 +186,7 @@ elif host_machine.system() == 'windows'
   cdata.set('SDL_VIDEO_OPENGL', 1)
   cdata.set('SDL_VIDEO_OPENGL_WGL', 1)
 #  core_args += '
-  core_ldflags += ['winmm.lib', 'version.lib', 'imm32.lib', 'opengl32.lib']
+  core_ldflags += ['winmm.lib', 'version.lib', 'imm32.lib', 'opengl32.lib', 'iphlpapi.lib']
 elif host_machine.system() == 'darwin'
   cdata.set('HAVE_GCC_ATOMICS', 1)
   cdata.set('HAVE_GCC_SYNC_LOCK_TEST_AND_SET', 1)
@@ -265,7 +265,6 @@ sdl2 = library('sdl2',
   all_sources,
   include_directories : core_inc,
   c_args : core_args,
-  link_args : core_ldflags,
   dependencies : core_deps,
 )
 
@@ -276,7 +275,8 @@ sdl2main = static_library('sdl2main',
 )
 
 sdl2_dep = declare_dependency(link_with : sdl2,
-  include_directories : core_inc)
+			      include_directories : core_inc,
+			      link_args : core_ldflags)
 sdl2main_dep = declare_dependency(link_with : sdl2main,
   include_directories : core_inc)
 
