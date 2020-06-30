@@ -1,7 +1,7 @@
 project('sdl2', 'c',
-  version : '2.0.3',
-  license : 'zlib',
-  default_options: ['c_std=gnu99'])
+	version : '2.0.3',
+	license : 'zlib',
+	default_options: ['c_std=gnu99'])
 
 varr = meson.project_version().split('.')
 version_major = varr[0]
@@ -11,11 +11,13 @@ version_micro = varr[2]
 cc = meson.get_compiler('c')
 
 core_deps = [cc.find_library('m', required : false),
-  cc.find_library('dl', required : false),
-  cc.find_library('pthread', required : false),
-]
+	     cc.find_library('dl', required : false),
+	     cc.find_library('pthread', required : false),
+	    ]
 
-if host_machine.system() == 'darwin'
+system = host_machine.system()
+
+if system == 'darwin'
   add_languages('objc')
 endif
 
@@ -120,7 +122,7 @@ check_functions = [
   ['HAVE_FSEEKO', 'fseeko', '#include<stdio.h>'],
   ['HAVE_FSEEKO64', 'fseeko64', '#include<stdio.h>'],
   ['HAVE_SIGACTION', 'sigaction', '#include<signal.h>'],
-# check token HAVE_SA_SIGACTION
+  # check token HAVE_SA_SIGACTION
   ['HAVE_SETJMP', 'setjmp', '#include<setjmp.h>'],
   ['HAVE_NANOSLEEP', 'nanosleep', '#include<time.h>'],
   ['HAVE_SYSCONF', 'sysconf', '#include<unistd.h>'],
@@ -128,10 +130,10 @@ check_functions = [
   ['HAVE_CLOCK_GETTIME', 'clock_gettime', '#include<time.h>'],
   ['HAVE_GETPAGESIZE', 'getpagesize', '#include<unistd.h>'],
   ['HAVE_MPROTECT', 'mprotect', '#include<sys/mman.h>'],
-# check token HAVE_ICONV
+  # check token HAVE_ICONV
   ['HAVE_PTHREAD_SETNAME_NP', 'pthread_setname_np', '#include<pthread.h>'],
   ['HAVE_PTHREAD_SET_NAME_NP', 'pthread_set_name_np', '#include<pthread.h>'],
-# check token HAVE_SEM_TIMEDWAIT
+  # check token HAVE_SEM_TIMEDWAIT
 ]
 
 foreach f : check_functions
@@ -150,7 +152,7 @@ endif
 core_args = ['-DUSING_GENERATED_CONFIG_H']
 core_ldflags = []
 
-if host_machine.system() == 'linux'
+if system == 'linux'
   cdata.set('HAVE_GCC_ATOMICS', 1)
   cdata.set('HAVE_GCC_SYNC_LOCK_TEST_AND_SET', 1)
   cdata.set('HAVE_PTHREAD_SPINLOCK', 1)
@@ -170,7 +172,7 @@ if host_machine.system() == 'linux'
   cdata.set('SDL_VIDEO_DRIVER_X11_XINPUT2_SUPPORTS_MULTITOUCH', 1)
   cdata.set('SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS', 1)
   core_args += ['-pthread']
-elif host_machine.system() == 'windows'
+elif system == 'windows'
   cdata.set('SDL_THREAD_WINDOWS', 1)
   cdata.set('SDL_JOYSTICK_DINPUT', 1)
   cdata.set('SDL_HAPTIC_DINPUT', 1)
@@ -185,9 +187,8 @@ elif host_machine.system() == 'windows'
   cdata.set('SDL_AUDIO_DRIVER_WINMM', 1)
   cdata.set('SDL_VIDEO_OPENGL', 1)
   cdata.set('SDL_VIDEO_OPENGL_WGL', 1)
-#  core_args += '
-  core_ldflags += ['winmm.lib', 'version.lib', 'imm32.lib', 'opengl32.lib', 'iphlpapi.lib']
-elif host_machine.system() == 'darwin'
+  core_ldflags += ['winmm.lib', 'version.lib', 'imm32.lib', 'iphlpapi.lib']
+elif system == 'darwin'
   cdata.set('HAVE_GCC_ATOMICS', 1)
   cdata.set('HAVE_GCC_SYNC_LOCK_TEST_AND_SET', 1)
   cdata.set('HAVE_PTHREAD_SPINLOCK', 1)
@@ -204,10 +205,10 @@ elif host_machine.system() == 'darwin'
   cdata.set('SDL_VIDEO_OPENGL_CGL', 1)
   core_args += ['-pthread']
   core_deps += [dependency('appleframeworks',
-    modules : ['CoreFoundation', 'Foundation',
-     'QuartzCore', 'CoreAudio',
-    'AudioUnit', 'AudioToolbox', 'ForceFeedback',
-    'IOKit', 'Cocoa', 'Carbon', 'CoreGraphics'])]
+			   modules : ['CoreFoundation', 'Foundation',
+				      'QuartzCore', 'CoreAudio',
+				      'AudioUnit', 'AudioToolbox', 'ForceFeedback',
+				      'IOKit', 'Cocoa', 'Carbon', 'CoreGraphics'])]
 else
   error('Unsupported platform.')
 endif
@@ -226,6 +227,12 @@ xinerama_dep = dependency('xinerama', required : false)
 
 if gl_dep.found()
   cdata.set('SDL_VIDEO_RENDER_OGL', 1)
+  # linking against opengl
+  if system == 'linux'
+    core_ldflags += ['-lGL']
+  elif system == 'windows'
+    core_ldflags += ['opengl32.lib']
+  endif
 endif
 
 if x11_dep.found()
@@ -234,25 +241,25 @@ if x11_dep.found()
   endif
   if xrandr_dep.found()
     cdata.set('SDL_VIDEO_DRIVER_X11_DYNAMIC_XRANDR', 1)
-#    cdata.set('SDL_VIDEO_DRIVER_X11_XRANDR', 1)
+    #    cdata.set('SDL_VIDEO_DRIVER_X11_XRANDR', 1)
   endif
   if xinerama_dep.found()
     cdata.set('SDL_VIDEO_DRIVER_X11_XINERAMA', 1)
-#    cdata.set('SDL_VIDEO_DRIVER_X11_DYNAMIC_XINERAMA', 1)
+    #    cdata.set('SDL_VIDEO_DRIVER_X11_DYNAMIC_XINERAMA', 1)
   endif
 endif
 
 if alsa_dep.found()
   cdata.set('SDL_AUDIO_DRIVER_ALSA', 1)
-#  cdata.set('SDL_AUDIO_DRIVER_ALSA_DYNAMIC', 1)
+  #  cdata.set('SDL_AUDIO_DRIVER_ALSA_DYNAMIC', 1)
 endif
 
 # The config file is at root because we want to
 # ensure that it comes before the include subdir
 # in search order and include also has a SDL_config.h.
 configure_file(input : 'SDL_config.h.meson',
-  output : 'SDL_config.h',
-  configuration : cdata)
+	       output : 'SDL_config.h',
+	       configuration : cdata)
 
 
 subdir('src')
@@ -261,24 +268,25 @@ core_deps += [
   alsa_dep,
 ]
 
+# should I add link_args here as well?
 sdl2 = library('sdl2',
-  all_sources,
-  include_directories : core_inc,
-  c_args : core_args,
-  dependencies : core_deps,
-)
+	       all_sources,
+	       include_directories : core_inc,
+	       c_args : core_args,
+	       dependencies : core_deps,
+	      )
 
 sdl2main = static_library('sdl2main',
-  main_sources,
-  include_directories : core_inc,
-  c_args : core_args,
-)
+			  main_sources,
+			  include_directories : core_inc,
+			  c_args : core_args,
+			 )
 
 sdl2_dep = declare_dependency(link_with : sdl2,
 			      include_directories : core_inc,
 			      link_args : core_ldflags)
 sdl2main_dep = declare_dependency(link_with : sdl2main,
-  include_directories : core_inc)
+				  include_directories : core_inc)
 
 # disabled for now
 # subdir('test')
