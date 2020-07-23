@@ -1,5 +1,5 @@
 project('sdl2', 'c',
-	version : '2.0.3',
+	version : '2.0.5',
 	license : 'zlib',
 	default_options: ['c_std=gnu99'])
 
