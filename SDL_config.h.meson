@@ -48,6 +48,12 @@
 #mesondefine HAVE_GCC_SYNC_LOCK_TEST_AND_SET
 #mesondefine HAVE_PTHREAD_SPINLOCK
 
+#mesondefine HAVE_DDRAW_H
+#mesondefine HAVE_DINPUT_H
+#mesondefine HAVE_DSOUND_H
+#mesondefine HAVE_DXGI_H
+#mesondefine HAVE_XINPUT_H
+
 /* Comment this if you want to build without any C library requirements */
 #mesondefine HAVE_LIBC
 #if HAVE_LIBC
@@ -197,10 +203,12 @@
 #mesondefine SDL_AUDIO_DRIVER_COREAUDIO
 #mesondefine SDL_AUDIO_DRIVER_DISK
 #mesondefine SDL_AUDIO_DRIVER_DUMMY
+#mesondefine SDL_AUDIO_DRIVER_ANDROID
 #mesondefine SDL_AUDIO_DRIVER_XAUDIO2
 #mesondefine SDL_AUDIO_DRIVER_DSOUND
 #mesondefine SDL_AUDIO_DRIVER_ESD
 #mesondefine SDL_AUDIO_DRIVER_ESD_DYNAMIC
+#mesondefine SDL_AUDIO_DRIVER_NACL
 #mesondefine SDL_AUDIO_DRIVER_NAS
 #mesondefine SDL_AUDIO_DRIVER_NAS_DYNAMIC
 #mesondefine SDL_AUDIO_DRIVER_SNDIO
@@ -213,6 +221,7 @@
 #mesondefine SDL_AUDIO_DRIVER_WINMM
 #mesondefine SDL_AUDIO_DRIVER_FUSIONSOUND
 #mesondefine SDL_AUDIO_DRIVER_FUSIONSOUND_DYNAMIC
+#mesondefine SDL_AUDIO_DRIVER_EMSCRIPTEN
 
 /* Enable various input drivers */
 #mesondefine SDL_INPUT_LINUXEV
@@ -220,16 +229,20 @@
 #mesondefine SDL_INPUT_TSLIB
 #mesondefine SDL_JOYSTICK_HAIKU
 #mesondefine SDL_JOYSTICK_DINPUT
+#mesondefine SDL_JOYSTICK_XINPUT
 #mesondefine SDL_JOYSTICK_DUMMY
 #mesondefine SDL_JOYSTICK_IOKIT
 #mesondefine SDL_JOYSTICK_LINUX
+#mesondefine SDL_JOYSTICK_ANDROID
 #mesondefine SDL_JOYSTICK_WINMM
 #mesondefine SDL_JOYSTICK_USBHID
 #mesondefine SDL_JOYSTICK_USBHID_MACHINE_JOYSTICK_H
+#mesondefine SDL_JOYSTICK_EMSCRIPTEN
 #mesondefine SDL_HAPTIC_DUMMY
 #mesondefine SDL_HAPTIC_LINUX
 #mesondefine SDL_HAPTIC_IOKIT
 #mesondefine SDL_HAPTIC_DINPUT
+#mesondefine SDL_HAPTIC_XINPUT
 
 /* Enable various shared object loading systems */
 #mesondefine SDL_LOADSO_HAIKU
@@ -249,9 +262,15 @@
 #mesondefine SDL_TIMER_DUMMY
 #mesondefine SDL_TIMER_UNIX
 #mesondefine SDL_TIMER_WINDOWS
-#mesondefine SDL_TIMER_WINCE
 
 /* Enable various video drivers */
+#mesondefine SDL_TIMER_HAIKU
+#mesondefine SDL_TIMER_DUMMY
+#mesondefine SDL_TIMER_UNIX
+#mesondefine SDL_TIMER_WINDOWS
+
+/* Enable various video drivers */
+#mesondefine SDL_VIDEO_DRIVER_ANDROID
 #mesondefine SDL_VIDEO_DRIVER_HAIKU
 #mesondefine SDL_VIDEO_DRIVER_COCOA
 #mesondefine SDL_VIDEO_DRIVER_DIRECTFB
@@ -259,6 +278,9 @@
 #mesondefine SDL_VIDEO_DRIVER_DUMMY
 #mesondefine SDL_VIDEO_DRIVER_WINDOWS
 #mesondefine SDL_VIDEO_DRIVER_WAYLAND
+#mesondefine SDL_VIDEO_DRIVER_RPI
+#mesondefine SDL_VIDEO_DRIVER_VIVANTE
+#mesondefine SDL_VIDEO_DRIVER_VIVANTE_VDK
 
 #if 0
 /* !!! FIXME: in configure script version, missing here: */

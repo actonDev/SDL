@@ -45,6 +45,7 @@ check_headers = [
   ['HAVE_DBUS_DBUS_H', 'dbus/dbus.h'],
   ['HAVE_STDARG_H', 'stdarg.h'],
   ['HAVE_STDDEF_H', 'stddef.h'],
+  ['HAVE_DINPUT_H', 'dinput.h']
 ]
 
 foreach h : check_headers
@@ -274,6 +275,7 @@ sdl2 = library('sdl2',
 	       include_directories : core_inc,
 	       c_args : core_args,
 	       dependencies : core_deps,
+	       link_args : core_ldflags,
 	      )
 
 sdl2main = static_library('sdl2main',
