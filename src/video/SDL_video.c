@@ -2556,7 +2556,9 @@ SDL_DestroyWindow(SDL_Window * window)
     window->is_destroying = SDL_TRUE;
 
     /* Restore video mode, etc. */
-    SDL_HideWindow(window);
+    if (!(window->flags & SDL_WINDOW_FOREIGN)) {
+        SDL_HideWindow(window);
+    }
 
     /* Make sure this window no longer has focus */
     if (SDL_GetKeyboardFocus() == window) {
