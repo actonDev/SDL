@@ -214,7 +214,6 @@ else
   error('Unsupported platform.')
 endif
 
-core_inc = include_directories('.', 'include')
 all_sources = []
 main_sources = []
 
@@ -258,10 +257,11 @@ endif
 # The config file is at root because we want to
 # ensure that it comes before the include subdir
 # in search order and include also has a SDL_config.h.
-configure_file(input : 'SDL_config.h.meson',
+sdl_config_h = configure_file(input : 'SDL_config.h.meson',
 	       output : 'SDL_config.h',
 	       configuration : cdata)
 
+core_inc = include_directories('.', 'include' )
 
 subdir('src')
 core_deps += [
@@ -270,8 +270,8 @@ core_deps += [
 ]
 
 # should I add link_args here as well?
-sdl2 = library('sdl2',
-	       all_sources,
+sdl2 = library('sdl2', 
+	       all_sources + [sdl_config_h],
 	       include_directories : core_inc,
 	       c_args : core_args,
 	       dependencies : core_deps,
@@ -279,7 +279,7 @@ sdl2 = library('sdl2',
 	      )
 
 sdl2main = static_library('sdl2main',
-			  main_sources,
+			  main_sources + [sdl_config_h],
 			  include_directories : core_inc,
 			  c_args : core_args,
 			 )
