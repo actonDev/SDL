@@ -155,6 +155,11 @@ SDL_DYNAPI_PROC(SDL_bool,SDL_HasEvents,(Uint32 a, Uint32 b),(a,b),return)
 SDL_DYNAPI_PROC(void,SDL_FlushEvent,(Uint32 a),(a),)
 SDL_DYNAPI_PROC(void,SDL_FlushEvents,(Uint32 a, Uint32 b),(a,b),)
 SDL_DYNAPI_PROC(int,SDL_PollEvent,(SDL_Event *a),(a),return)
+// actondev mods
+SDL_DYNAPI_PROC(int,SDL_PollEventWindow,(SDL_Event *a, SDL_Window* w),(a, w),return)
+SDL_DYNAPI_PROC(int,SDL_WaitEventTimeoutWindow,(SDL_Event *a,SDL_Window* w, int b),(a,w,b),return)
+SDL_DYNAPI_PROC(void,SDL_PumpEventsWindow,(SDL_Window* w),(w),)
+// /actondev
 SDL_DYNAPI_PROC(int,SDL_WaitEvent,(SDL_Event *a),(a),return)
 SDL_DYNAPI_PROC(int,SDL_WaitEventTimeout,(SDL_Event *a, int b),(a,b),return)
 SDL_DYNAPI_PROC(int,SDL_PushEvent,(SDL_Event *a),(a),return)
@@ -644,3 +649,5 @@ SDL_DYNAPI_PROC(void,SDL_SetWindowResizable,(SDL_Window *a, SDL_bool b),(a,b),)
 SDL_DYNAPI_PROC(SDL_Surface*,SDL_CreateRGBSurfaceWithFormat,(Uint32 a, int b, int c, int d, Uint32 e),(a,b,c,d,e),return)
 SDL_DYNAPI_PROC(SDL_Surface*,SDL_CreateRGBSurfaceWithFormatFrom,(void *a, int b, int c, int d, int e, Uint32 f),(a,b,c,d,e,f),return)
 SDL_DYNAPI_PROC(SDL_bool,SDL_GetHintBoolean,(const char *a, SDL_bool b),(a,b),return)
+
+

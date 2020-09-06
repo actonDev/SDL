@@ -410,12 +410,39 @@ SDL_PumpEvents(void)
     SDL_SendPendingQuit();  /* in case we had a signal handler fire, etc. */
 }
 
+/* Run the system dependent event loops */
+void
+SDL_PumpEventsWindow(SDL_Window* window)
+{
+    // printf("SDL_PumpEventsWindow\n");
+    SDL_VideoDevice *_this = SDL_GetVideoDevice();
+
+    /* Get events from the video subsystem */
+    if (_this) {
+        _this->PumpEventsWindow(_this, window);
+    }
+#if !SDL_JOYSTICK_DISABLED
+    /* Check for joystick state change */
+    if ((!SDL_disabled_events[SDL_JOYAXISMOTION >> 8] || SDL_JoystickEventState(SDL_QUERY))) {
+        SDL_JoystickUpdate();
+    }
+#endif
+
+    SDL_SendPendingQuit();  /* in case we had a signal handler fire, etc. */
+}
+
 /* Public functions */
 
 int
 SDL_PollEvent(SDL_Event * event)
 {
     return SDL_WaitEventTimeout(event, 0);
+}
+
+int
+SDL_PollEventWindow(SDL_Event * event, SDL_Window* window)
+{
+    return SDL_WaitEventTimeoutWindow(event, window, 0);
 }
 
 int
@@ -435,6 +462,43 @@ SDL_WaitEventTimeout(SDL_Event * event, int timeout)
     for (;;) {
         SDL_PumpEvents();
         switch (SDL_PeepEvents(event, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT)) {
+        case -1:
+            return 0;
+        case 0:
+            if (timeout == 0) {
+                /* Polling and no events, just return */
+                return 0;
+            }
+            if (timeout > 0 && SDL_TICKS_PASSED(SDL_GetTicks(), expiration)) {
+                /* Timeout expired and no events */
+                return 0;
+            }
+            SDL_Delay(10);
+            break;
+        default:
+            /* Has events */
+            return 1;
+        }
+    }
+}
+
+int
+SDL_WaitEventTimeoutWindow(SDL_Event * event, SDL_Window* window, int timeout)
+{
+    // printf("SDL_WaitEventTimeoutWindow\n");
+    Uint32 expiration = 0;
+
+    if (timeout > 0)
+        expiration = SDL_GetTicks() + timeout;
+
+    for (;;) {
+        // printf("before SDL_PumpEventsWindow\n");
+        SDL_PumpEventsWindow(window);
+        // printf("before SDL_PeepEvents\n");
+        // printf("after SDL_PumpEventsWindow\n");
+        int res =SDL_PeepEvents(event, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
+        // printf("SDL_PeepEvents res %d\n", res);
+        switch (res) {
         case -1:
             return 0;
         case 0:

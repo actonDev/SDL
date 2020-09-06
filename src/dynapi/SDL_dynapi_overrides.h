@@ -126,6 +126,11 @@
 #define SDL_FlushEvent SDL_FlushEvent_REAL
 #define SDL_FlushEvents SDL_FlushEvents_REAL
 #define SDL_PollEvent SDL_PollEvent_REAL
+// actondev
+#define SDL_PollEventWindow SDL_PollEventWindow_REAL
+#define SDL_WaitEventTimeoutWindow SDL_WaitEventTimeoutWindow_REAL
+#define SDL_PumpEventsWindow SDL_PumpEventsWindow_REAL
+// /actondev
 #define SDL_WaitEvent SDL_WaitEvent_REAL
 #define SDL_WaitEventTimeout SDL_WaitEventTimeout_REAL
 #define SDL_PushEvent SDL_PushEvent_REAL

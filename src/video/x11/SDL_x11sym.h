@@ -135,6 +135,9 @@ SDL_X11_SYM(int,XUninstallColormap,(Display* a,Colormap b),(a,b),return)
 SDL_X11_SYM(int,XUnloadFont,(Display* a,Font b),(a,b),return)
 SDL_X11_SYM(int,XWarpPointer,(Display* a,Window b,Window c,int d,int e,unsigned int f,unsigned int g,int h,int i),(a,b,c,d,e,f,g,h,i),return)
 SDL_X11_SYM(int,XWindowEvent,(Display* a,Window b,long c,XEvent* d),(a,b,c,d),return)
+// actondev
+SDL_X11_SYM(int,XCheckWindowEvent,(Display* a,Window b,long c,XEvent* d),(a,b,c,d),return)
+// /actondev
 SDL_X11_SYM(Status,XWithdrawWindow,(Display* a,Window b,int c),(a,b,c),return)
 SDL_X11_SYM(VisualID,XVisualIDFromVisual,(Visual* a),(a),return)
 #if SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY

@@ -572,6 +572,9 @@ typedef union SDL_Event
  */
 extern DECLSPEC void SDLCALL SDL_PumpEvents(void);
 
+// actondv
+extern DECLSPEC void SDLCALL SDL_PumpEventsWindow(SDL_Window*);
+
 /* @{ */
 typedef enum
 {
@@ -628,6 +631,10 @@ extern DECLSPEC void SDLCALL SDL_FlushEvents(Uint32 minType, Uint32 maxType);
  */
 extern DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event * event);
 
+
+extern DECLSPEC int SDLCALL SDL_PollEventWindow(SDL_Event * event, SDL_Window* window);
+
+
 /**
  *  \brief Waits indefinitely for the next available event.
  *
@@ -649,6 +656,11 @@ extern DECLSPEC int SDLCALL SDL_WaitEvent(SDL_Event * event);
  *  \param timeout The timeout (in milliseconds) to wait for next event.
  */
 extern DECLSPEC int SDLCALL SDL_WaitEventTimeout(SDL_Event * event,
+                                                 int timeout);
+
+
+extern DECLSPEC int SDLCALL SDL_WaitEventTimeoutWindow(SDL_Event * event,
+                                                       SDL_Window* window,
                                                  int timeout);
 
 /**

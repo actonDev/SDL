@@ -260,6 +260,9 @@ struct SDL_VideoDevice
      * Event manager functions
      */
     void (*PumpEvents) (_THIS);
+    
+    // actondev
+    void (*PumpEventsWindow) (_THIS, SDL_Window* window);
 
     /* Suspend the screensaver */
     void (*SuspendScreenSaver) (_THIS);

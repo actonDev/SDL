@@ -531,10 +531,11 @@ X11_UpdateUserTime(SDL_WindowData *data, const unsigned long latest)
     }
 }
 
-
+#define DEBUG_XEVENTS 1
 static void
-X11_DispatchEvent(_THIS)
+X11_DispatchEvent(_THIS, SDL_Window* window)
 {
+    // printf("X11_DispatchEvent\n");
     SDL_VideoData *videodata = (SDL_VideoData *) _this->driverdata;
     Display *display;
     SDL_WindowData *data;
@@ -550,7 +551,20 @@ X11_DispatchEvent(_THIS)
     display = videodata->display;
 
     SDL_zero(xevent);           /* valgrind fix. --ryan. */
-    X11_XNextEvent(display, &xevent);
+    if(window == NULL){
+        X11_XNextEvent(display, &xevent);
+    } else {
+        SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
+        // printf("got data?? %p\n", data);
+        // printf("got xwindow?? %ld\n", data->xwindow);
+        unsigned long event_mask = -1; // setting all bits to 1
+        // XWindowEvent is blocking
+        // X11_XWindowEvent(display, data->xwindow, event_mask, &xevent);
+        // X11_XCheckWindowEvent is non-blocking, return true or false
+        if(!X11_XCheckWindowEvent(display, data->xwindow, event_mask, &xevent)){
+            return;
+        }
+    }
 
     /* Save the original keycode for dead keys, which are filtered out by
        the XFilterEvent() call below.
@@ -1404,7 +1418,7 @@ X11_PumpEvents(_THIS)
 
     /* Keep processing pending events */
     while (X11_Pending(data->display)) {
-        X11_DispatchEvent(_this);
+        X11_DispatchEvent(_this, NULL);
     }
 
 #ifdef SDL_USE_IME
@@ -1417,6 +1431,55 @@ X11_PumpEvents(_THIS)
     X11_HandleFocusChanges(_this);
 }
 
+void
+X11_PumpEventsWindow(_THIS, SDL_Window* window)
+{
+    // printf("X11_PumpEventsWindow\n");
+    SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
+
+    if (data->last_mode_change_deadline) {
+        if (SDL_TICKS_PASSED(SDL_GetTicks(), data->last_mode_change_deadline)) {
+            data->last_mode_change_deadline = 0;  /* assume we're done. */
+        }
+    }
+
+    /* Update activity every 30 seconds to prevent screensaver */
+    if (_this->suspend_screensaver) {
+        const Uint32 now = SDL_GetTicks();
+        if (!data->screensaver_activity ||
+            SDL_TICKS_PASSED(now, data->screensaver_activity + 30000)) {
+            X11_XResetScreenSaver(data->display);
+
+#if SDL_USE_LIBDBUS
+            SDL_DBus_ScreensaverTickle();
+#endif
+
+            data->screensaver_activity = now;
+        }
+    }
+
+    /* Keep processing pending events */
+    
+    // gotta find away to check if there are available events for THIS window
+    
+    if(window == NULL){
+        while (X11_Pending(data->display)) {
+            X11_DispatchEvent(_this, NULL);
+        }
+    } else {
+        // note, this version will NOT block
+        X11_DispatchEvent(_this, window);
+    }
+
+#ifdef SDL_USE_IME
+    if(SDL_GetEventState(SDL_TEXTINPUT) == SDL_ENABLE){
+        SDL_IME_PumpEvents();
+    }
+#endif
+
+    /* FIXME: Only need to do this when there are pending focus changes */
+    X11_HandleFocusChanges(_this);
+}
 
 void
 X11_SuspendScreenSaver(_THIS)

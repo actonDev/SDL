@@ -24,6 +24,9 @@
 #define _SDL_x11events_h
 
 extern void X11_PumpEvents(_THIS);
+// actondev
+extern void X11_PumpEventsWindow(_THIS, SDL_Window*);
+// !
 extern void X11_SuspendScreenSaver(_THIS);
 
 #endif /* _SDL_x11events_h */
